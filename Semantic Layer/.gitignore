@@ -1,0 +1,42 @@
+# Databricks
+.databricks/
+databricks.yml
+databricks.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets & credentials
+*.env
+*.key
+*.pem
+secrets.json
+
+# Logs
+*.log
+logs/
