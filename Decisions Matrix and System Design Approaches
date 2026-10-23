@@ -1,1 +1,275 @@
+This is one of the most important design decisions in modern ML systems. My rule of thumb:
 
+If your value comes from learning patterns in structured data → use a Tabular Foundation Model (TFM).
+
+If your value comes from retrieving facts from tables/documents → use RAG.
+
+If you need both prediction and explanation → combine them.
+
+1. What is each approach?
+Tabular Foundation Model
+
+A model trained or adapted directly on tabular data.
+
+Examples:
+
+TabPFN
+FT-Transformer
+TabTransformer
+ExcelFormer
+ModernGBM + Embeddings
+Enterprise tabular foundation models
+
+Input:
+
+Customer	Age	Income	TransactionsA	32	80k	120
+
+Output:
+
+Fraud probability
+Churn probability
+Default risk
+Conversion likelihood
+
+The model learns relationships between columns and predicts outcomes.
+
+RAG with Tabular Data
+
+Convert tables into retrievable chunks and let an LLM answer questions.
+
+Input:
+
+Month	RevenueJan	100k
+Feb	120k
+
+Question:
+
+Which month had highest revenue?
+
+RAG:
+
+Retrieve relevant rows.
+Feed them to LLM.
+Generate answer.
+
+Output:
+
+Natural language answers
+Summaries
+BI-style Q&A
+Core Difference
+Question	Tabular FM	RAGLearns patterns?	✅ Yes	❌ No
+Predicts future?	✅ Yes	❌ No
+Retrieves facts?	⚠️ Limited	✅ Excellent
+Explain business data?	⚠️ Partial	✅ Excellent
+Handles changing data?	Retrain needed	Simple refresh
+Best for analytics?	Predictive	Descriptive
+Fraud Detection Example
+
+You seem to have fraud analytics tabs open, so let's use that.
+
+Tabular Foundation Model
+
+Training data:
+
+Amount	Country	Device Age	Chargeback500	US	3 days	Yes
+
+Model learns:
+
+New devices are risky
+Large amount + new device is suspicious
+Certain behavioral patterns indicate fraud
+
+Question:
+
+Is this transaction fraudulent?
+
+Excellent choice.
+
+RAG
+
+Store:
+
+Fraud manuals
+Historical cases
+Investigation notes
+Rules
+
+Question:
+
+Why was Transaction X blocked?
+
+RAG retrieves:
+
+Rule triggered
+Similar past investigations
+Case notes
+
+Excellent choice.
+
+When Tabular FM Wins
+
+Choose TFM when you need:
+
+1. Risk Scoring
+
+Examples:
+
+Fraud score
+Credit score
+Churn score
+Customer lifetime value
+
+Reason: The model needs to infer hidden patterns.
+
+2. Forecasting
+
+Questions like:
+
+Will customer churn?
+Will loan default?
+Future sales?
+
+RAG cannot predict unseen outcomes.
+
+3. Anomaly Detection
+
+Questions:
+
+Is this transaction unusual?
+Is this device abnormal?
+
+Requires statistical learning.
+
+TFM wins.
+
+When RAG Wins
+
+Choose RAG when you need:
+
+1. Business Q&A
+
+Examples:
+
+Which products grew fastest in Q2?
+
+What was revenue in ASEAN region?
+
+No retraining needed.
+
+2. Compliance and Audit
+
+Questions:
+
+Why was this customer rejected?
+
+Which policy section applied?
+
+RAG shines because answers require retrieving evidence.
+
+3. Executive Dashboards
+
+Questions:
+
+Summarize the top fraud trends this month.
+
+Compare Indonesia and Singapore fraud losses.
+
+Much easier with RAG.
+
+Biggest Mistake
+
+Many teams try:
+
+LLM + CSV
+
+
+and expect:
+
+prediction
+classification
+anomaly detection
+
+LLMs are often poor at discovering subtle statistical patterns in raw tabular data.
+
+Example:
+
+Fraud signal may be:
+
+Device Age < 2 days
+AND
+Velocity > 7 tx/min
+AND
+Merchant Category = X
+
+
+A trained tabular model finds these patterns far better than RAG.
+
+Hybrid Architecture (Most Enterprise Systems)
+
+This is what I usually recommend.
+
+                Transaction
+                      |
+               Feature Store
+                      |
+             Tabular Foundation Model
+                      |
+                Fraud Score
+                      |
+            ---------------------
+            |                   |
+            v                   v
+      Case System          RAG System
+                                |
+                    Policies + Cases
+                    Investigation Notes
+                    Fraud Rules
+                                |
+                             LLM
+
+
+TFM:
+
+Predict fraud likelihood
+
+RAG:
+
+Explain findings
+Retrieve evidence
+Generate investigator reports
+For Your Fraud Analytics Use Case
+
+Looking at roles like Fraud Analytics at banks (OCBC, Shinhan, etc.), I'd rank options as:
+
+Use Tabular FM if:
+Transaction-level fraud detection
+Real-time risk scoring
+AML anomaly detection
+Account takeover detection
+Use RAG if:
+Investigator copilot
+Fraud case search
+Policy QA
+Audit explanation
+SAR/report generation
+Use Both if:
+
+You want:
+
+"Score the transaction and explain why."
+
+Example:
+
+Fraud Probability: 92%
+
+Retrieved Evidence:
+- Velocity rule triggered
+- Similar to 147 prior confirmed fraud cases
+- Device fingerprint matches known risk cluster
+
+Explanation:
+The transaction was flagged primarily due to...
+
+
+This hybrid "predict + explain" pattern is where most modern banking fraud platforms are heading because it combines the strengths of statistical learning and retrieval-based reasoning.
